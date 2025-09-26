@@ -355,11 +355,12 @@ void IMergeTreeReader::performRequiredConversions(Columns & res_columns) const
             copy_block.insert({res_columns[pos], column_in_part.type, name_and_type->name});
         }
 
+        if (copy_block.empty())
+            return;
+
         DB::performRequiredConversions(copy_block, getColumns(),
             data_part_info_for_read->getContext(),
             storage_snapshot->metadata->getColumns().getDefaults());
-        if (copy_block.empty())
-            return;
 
         /// Move columns from block.
         name_and_type = getColumns().begin();
