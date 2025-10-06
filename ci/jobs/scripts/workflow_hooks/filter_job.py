@@ -59,6 +59,12 @@ def should_skip_job(job_name):
         print("WARNING: no changed files found for PR - do not filter jobs")
         return False, ""
 
+    if job_name == JobNames.PR_BODY:
+        # Run the job if AI assistant is explicitly enabled in the PR body
+        if "<!---AI PR assistant enabled: false" in _info_cache.pr_body:
+            return True, "AI PR assistant is explicitly disabled in the PR body"
+        return False, ""
+
     if (
         Labels.CI_BUILD in _info_cache.pr_labels
         and "build" not in job_name.lower()
