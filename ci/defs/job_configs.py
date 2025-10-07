@@ -119,7 +119,6 @@ class JobConfigs:
         name=JobNames.PR_BODY,
         runs_on=RunnerLabels.STYLE_CHECK_ARM,
         command="python3 ./ci/jobs/pr_formatter_job.py",
-        enable_gh_auth=True,
         allow_merge_on_failure=True,
     )
     fast_test = Job.Config(

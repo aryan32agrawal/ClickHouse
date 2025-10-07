@@ -1,3 +1,6 @@
+import os
+
+from ci.praktika import Secret
 from ci.praktika.gh import GH
 from ci.praktika.info import Info
 from ci.praktika.result import Result
@@ -86,6 +89,10 @@ Execution notes:
 
     res = True
     results = []
+
+    pat = Secret.Config(name="maxknv_tmp_test", type=Secret.Type.AWS_SSM_PARAMETER).get_value()
+    os.environ["GH_TOKEN"] = pat
+
     if res:
         results.append(
             Result.from_commands_run(
