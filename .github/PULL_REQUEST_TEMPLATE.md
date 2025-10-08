@@ -1,4 +1,4 @@
-<!---AI PR assistant enabled: true-->
+<!---AI changelog entry and formatting assistance: true-->
 
 ### Changelog category (leave one):
 - New Feature

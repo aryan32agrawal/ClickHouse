@@ -1,12 +1,10 @@
 import os
+import shlex
 
 from ci.praktika import Secret
 from ci.praktika.gh import GH
 from ci.praktika.info import Info
 from ci.praktika.result import Result
-
-import shlex
-
 
 if __name__ == "__main__":
     info = Info()
@@ -90,7 +88,9 @@ Execution notes:
     res = True
     results = []
 
-    pat = Secret.Config(name="maxknv_tmp_test", type=Secret.Type.AWS_SSM_PARAMETER).get_value()
+    pat = Secret.Config(
+        name="maxknv_tmp_test", type=Secret.Type.AWS_SSM_PARAMETER
+    ).get_value()
     os.environ["GH_TOKEN"] = pat
 
     if res:
@@ -108,7 +108,7 @@ Execution notes:
                 name="check output",
                 command=[
                     f"test -f {output_file} && test $(wc -l < {output_file}) -gt 5",
-                    f"sed -i.bak '1s/^/<!---AI PR assistant enabled: false-->\\n/' {shlex.quote(output_file)} && rm -f {shlex.quote(output_file)}.bak",
+                    f"sed -i.bak '1s/^/<!---AI changelog entry and formatting assistance: false-->\\n/' {shlex.quote(output_file)} && rm -f {shlex.quote(output_file)}.bak",
                 ],
             )
         )
