@@ -79,6 +79,9 @@ class GH:
             if not res and "Bad credentials" in err:
                 print("ERROR: GH credentials/auth failure")
                 break
+            if not res and "Resource not accessible" in err:
+                print("ERROR: GH permissions failure")
+                break
             if not res:
                 retry_count += 1
                 time.sleep(5)

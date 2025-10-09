@@ -6,6 +6,7 @@ from ci.praktika.gh import GH
 from ci.praktika.info import Info
 from ci.praktika.result import Result
 
+
 if __name__ == "__main__":
     info = Info()
     assert info.pr_number, "This job must run for a Pull Request"
@@ -57,7 +58,7 @@ Changelog entry rules:
   * Make it a single, user-facing sentence in plain English.
   * Limit strictly to a maximum of 50 words.
 - If there is no valid entry, generate it from the PR title and change summary with the same constraints (plain text, one sentence, <= 50 words, no quotes or markdown).
-- If category is not for changelog — leave this section blank.
+- If category is "Not for changelog (changelog entry is not required)" — remove this section including header.
 
 Additional Information handling:
 - Preserve any additional technical details from the existing PR body by placing them under a final section titled exactly "### Additional Information".
@@ -88,16 +89,15 @@ Execution notes:
     res = True
     results = []
 
-    pat = Secret.Config(
-        name="maxknv_tmp_test", type=Secret.Type.AWS_SSM_PARAMETER
+    os.environ["GH_TOKEN"] = Secret.Config(
+        name="/github-tokens/robot-2-copilot", type=Secret.Type.AWS_SSM_PARAMETER
     ).get_value()
-    os.environ["GH_TOKEN"] = pat
 
     if res:
         results.append(
             Result.from_commands_run(
                 name="prompt",
-                command=f"copilot -p {shlex.quote(prompt)}  --allow-all-tools",
+                command=f"copilot -p {shlex.quote(prompt)} --allow-all-tools",
                 with_info=True,
             )
         )
@@ -107,7 +107,8 @@ Execution notes:
             Result.from_commands_run(
                 name="check output",
                 command=[
-                    f"test -f {output_file} && test $(wc -l < {output_file}) -gt 5",
+                    f"cat {output_file}",
+                    f"test -f {output_file} && test $(wc -l < {output_file}) -gt 2",
                     f"sed -i.bak '1s/^/<!---AI changelog entry and formatting assistance: false-->\\n/' {shlex.quote(output_file)} && rm -f {shlex.quote(output_file)}.bak",
                 ],
             )

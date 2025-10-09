@@ -9,7 +9,6 @@ from ci.jobs.scripts.workflow_hooks.pr_labels_and_category import (
 )
 from ci.praktika.gh import GH
 from ci.praktika.info import Info
-from ci.praktika.utils import Shell
 
 
 def check_changelog_entry(category, pr_body: str) -> str:
@@ -52,17 +51,17 @@ def check_changelog_entry(category, pr_body: str) -> str:
 
 
 if __name__ == "__main__":
-    try:
-        body, title, labels = GH.get_pr_title_body_labels()
-    except:
-        print(
-            "WARNING: cannot get PR info from GitHub - read from GH envs - might be outdated"
-        )
-        body = Info().pr_body
+
+    title, body, labels = GH.get_pr_title_body_labels()
+    if not title or not body:
+        print("WARNING: Failed to get PR title or body, read from environment")
+
+    body = Info().pr_body
     error, category = get_category(body)
     if error or not category:
         print(f"ERROR: {error}")
         sys.exit(1)
+
     error = check_changelog_entry(category, body)
     if error:
         print(f"ERROR: {error}")
