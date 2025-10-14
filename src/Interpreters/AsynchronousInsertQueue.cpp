@@ -349,9 +349,10 @@ void AsynchronousInsertQueue::preprocessInsertQuery(const ASTPtr & query, const 
     auto & insert_query = query->as<ASTInsertQuery &>();
     insert_query.async_insert_flush = true;
 
+    auto insert_context = Context::createCopy(query_context);
     InterpreterInsertQuery interpreter(
         query,
-        query_context,
+        insert_context,
         query_context->getSettingsRef()[Setting::insert_allow_materialized_columns],
         /* no_squash */ false,
         /* no_destination */ false,
