@@ -43,6 +43,7 @@
 #include <Storages/StorageDistributed.h>
 #include <Storages/StorageMaterializedView.h>
 #include <Storages/WindowView/StorageWindowView.h>
+#include <Storages/StorageObjectStorage.h>
 #include <TableFunctions/TableFunctionFactory.h>
 #include <Common/logger_useful.h>
 #include <Common/checkStackSize.h>
@@ -856,7 +857,7 @@ BlockIO InterpreterInsertQuery::execute()
         && query.table_id.database_name != DatabaseCatalog::SYSTEM_DATABASE
         && query.table_id.database_name != DatabaseCatalog::TEMPORARY_DATABASE)
     {
-        if (!(table->isRemote() || table->isDataLake()))
+        if (!(std::dynamic_pointer_cast<StorageObjectStorage>(table) || table->isDataLake()))
             throw Exception(ErrorCodes::QUERY_IS_PROHIBITED, "Insert queries are prohibited");
     }
 
