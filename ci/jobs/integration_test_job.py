@@ -338,6 +338,12 @@ def main():
             has_error = True
             error_info.append(test_result_sequential.info)
 
+    # Collect docker compose configs used in tests
+    files.extend(
+        str(p)
+        for p in Path("./tests/integration/").glob("test_*/_instances*/*/configs/")
+    )
+
     # Remove iptables rule added in tests
     Shell.check("sudo iptables -D DOCKER-USER 1 ||:", verbose=True)
 
