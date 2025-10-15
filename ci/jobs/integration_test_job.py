@@ -112,7 +112,6 @@ def main():
         elif to == "distributed plan":
             use_distributed_plan = True
         elif to == "flaky":
-            is_flaky_check = True
             args.count = FLAKY_CHECK_TEST_REPEAT_COUNT
         elif to == "parallel":
             is_parallel = True
@@ -125,6 +124,7 @@ def main():
 
     if args.count:
         repeat_option = f"--count {args.count} --random-order"
+        is_flaky_check = True
 
     changed_test_modules = []
     if is_bugfix_validation or is_flaky_check:
